@@ -17,5 +17,9 @@ public class Account {
 		this.accountNum = accountNum;
 		this.balance = balance;
 	}
+	
+	public String toString(){
+		return "accountNum=" + accountNum + " balance=" + balance;
+	}
 
 }

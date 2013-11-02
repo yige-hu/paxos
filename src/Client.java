@@ -21,8 +21,9 @@ public class Client {
 		
 		for (ProcessId ldr: replicas) {
 			env.sendMessage(ldr,
-				new RequestMessage(me, new Command(me, req_id ++, op)));
+				new RequestMessage(me, new Command(me, req_id, op)));
 		}
+		req_id ++;
 	}
 	
 	void respond(String op){

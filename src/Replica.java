@@ -10,11 +10,14 @@ public class Replica extends Process {
 	Map<Integer /* slot number */, Command> decisions = new HashMap<Integer, Command>();
 	
 	Map<Integer, BankClient> bankClients = new HashMap<Integer, BankClient>();
+	private DataInfo dataInfo;
 
 	public Replica(Env env, ProcessId me, ProcessId[] leaders){
 		this.env = env;
 		this.me = me;
 		this.leaders = leaders;
+		this.dataInfo = new DataInfo(me + ".dat");
+		this.dataInfo.clearDataInfo();
 		env.addProc(me, this);
 	}
 
@@ -100,6 +103,15 @@ public class Replica extends Process {
 			}
 		} catch (Exception e) {
 			System.out.println("Invalid command: " + op + ", " + e.toString());
+		}
+		
+		dataInfo.writeDataInfo("" + me + ": perform " + c);
+		for (BankClient client : bankClients.values()) {
+			dataInfo.writeDataInfo(client.toString());
+			
+			for (Account account : client.accounts.values()) {
+				dataInfo.writeDataInfo("\t" + account.toString());
+			}
 		}
 		
 		System.out.println("" + me + ": perform " + c);

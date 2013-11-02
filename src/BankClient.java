@@ -65,5 +65,9 @@ public class BankClient {
 		acc2.balance += amount;
 		return true;
 	}
+	
+	public String toString(){
+		return "clientID=" + clientID + " name=" + name;
+	}
 
 }
