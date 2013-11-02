@@ -5,6 +5,8 @@ import java.util.*;
 public class Env {
 	Map<ProcessId, Process> procs = new HashMap<ProcessId, Process>();
 	public final static int nAcceptors = 3, nReplicas = 2, nLeaders = 2, nRequests = 10;
+	
+	Map<Integer, Client> clients = new HashMap<Integer, Client>();
 
 	synchronized void sendMessage(ProcessId dst, PaxosMessage msg){
 		Process p = procs.get(dst);
