@@ -2,17 +2,17 @@ package src;
 
 public class Account {
 	
-	Client client;
+	BankClient client;
 	int accountNum;
 	long balance;
 	
-	Account(Client client, int accountNum) {
+	Account(BankClient client, int accountNum) {
 		this.client = client;
 		this.accountNum = accountNum;
 		this.balance = 0;
 	}
 	
-	Account(Client client, int accountNum, long balance) {
+	Account(BankClient client, int accountNum, long balance) {
 		this.client = client;
 		this.accountNum = accountNum;
 		this.balance = balance;
