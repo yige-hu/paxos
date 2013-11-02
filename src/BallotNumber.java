@@ -1,3 +1,5 @@
+package src;
+
 public class BallotNumber implements Comparable {
 	int round;
 	ProcessId leader_id;
