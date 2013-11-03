@@ -36,7 +36,7 @@ public class Commander extends Process {
 			if (msg instanceof P2bMessage) {
 				P2bMessage m = (P2bMessage) msg;
 
-				System.out.println(ballot_number.toString() + m.ballot_number.toString());
+				//System.out.println(ballot_number.toString() + m.ballot_number.toString());
 				
 				
 				if (ballot_number.equals(m.ballot_number)) {

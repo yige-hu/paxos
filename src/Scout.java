@@ -32,7 +32,7 @@ public class Scout extends Process {
 			if (msg instanceof P1bMessage) {
 				P1bMessage m = (P1bMessage) msg;
 
-				System.out.println(ballot_number.toString() + m.ballot_number.toString());
+				//System.out.println(ballot_number.toString() + m.ballot_number.toString());
 				
 				
 				int cmp = ballot_number.compareTo(m.ballot_number);

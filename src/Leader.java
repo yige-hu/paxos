@@ -12,7 +12,7 @@ public class Leader extends Process {
 	long time_out = 10;
 	float increase_factor = (float) 1.1;
 	int decrease_factor = 1;
-	boolean monitoring = false;
+	int monitorNum = 0;
 
 	public Leader(Env env, ProcessId me, ProcessId[] acceptors,
 										ProcessId[] replicas){
@@ -36,7 +36,7 @@ public class Leader extends Process {
 				ProposeMessage m = (ProposeMessage) msg;
 				if (!proposals.containsKey(m.slot_number)) {
 					proposals.put(m.slot_number, m.command);
-					if (active && (! monitoring)) {
+					if (active) {
 						new Commander(env,
 							new ProcessId("commander:" + me + ":" + ballot_number + ":" + m.slot_number),
 							me, acceptors, replicas, ballot_number, m.slot_number, m.command);
@@ -80,7 +80,9 @@ public class Leader extends Process {
 					active = true;
 					
 					// adjust time-out for the next ballot
-					time_out -= decrease_factor;
+					if (time_out > decrease_factor) {
+						time_out -= decrease_factor;
+					}
 				}
 			}
 
@@ -88,21 +90,24 @@ public class Leader extends Process {
 				PreemptedMessage m = (PreemptedMessage) msg;
 				if (ballot_number.compareTo(m.ballot_number) < 0) {
 					
-					// failure detector
-					// TO-DO: send ping request and adjust time-out
-					// starts monitor as an independent thread, or simply block here?
-					// I think it could just block here. Otherwise new Scout will cause problem
+					active = false;
 					
+					// failure detector:
 					for (;;) {
-						sendMessage(m.newLeader, new PingRespondMessage(me));
+						System.out.println("Monitor");
+						
+						// TODO
+						monitorNum ++;
 						long start_time = System.currentTimeMillis();
-						
-						// TODO add more  && (! monitoring)
-						
-						
+						Monitor monitor = new Monitor(env, new ProcessId("monitor:" + monitorNum + me), m.newLeader);
+						try {
+							monitor.join(time_out);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
 						long duration = System.currentTimeMillis() - start_time;
 						
-						if (duration > time_out) {				
+						if (duration >= time_out) {				
 							break;
 						}
 						
@@ -119,7 +124,6 @@ public class Leader extends Process {
 					ballot_number = new BallotNumber(m.ballot_number.round + 1, me);
 					new Scout(env, new ProcessId("scout:" + me + ":" + ballot_number),
 						me, acceptors, ballot_number);
-					active = false;
 				}
 			}
 			
