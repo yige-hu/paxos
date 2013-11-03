@@ -1,0 +1,59 @@
+package src;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Monitor extends Process {
+	
+	ProcessId[] leaders;
+	
+	Monitor(Env env, ProcessId me, ProcessId[] leaders) {
+		this.env = env;
+		this.me = me;
+		this.leaders = leaders;
+	}
+
+	@Override
+	void body() {
+		for (;;) {
+			
+			Map<ProcessId, Boolean> active = new HashMap<ProcessId, Boolean>();
+			
+			for (ProcessId ldr: leaders) {
+				sendMessage(ldr, new MonitorRequestMessage(me));
+				active.put(ldr, Boolean.FALSE);
+			}
+			
+			for (;;) {
+				
+				PaxosMessage msg = getNextMessage();
+				if (msg instanceof MonitorRespondMessage) {
+					active.put(msg.src, ((MonitorRespondMessage) msg).result);
+				}
+			}
+			
+			String file = "leaderState.dat";
+			
+			try {
+				BufferedWriter buffer = new BufferedWriter(new FileWriter(file, true));
+				buffer.append(text + "\n");
+				buffer.flush();
+				buffer.close();
+			} catch (IOException e) {
+				System.out.println("Write to DataInfo failed: " + e);
+			}
+			
+			try {
+				sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+}

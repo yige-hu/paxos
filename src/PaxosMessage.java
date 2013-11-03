@@ -52,8 +52,19 @@ class ProposeMessage extends PaxosMessage {
 	public ProposeMessage(ProcessId src, int slot_number, Command command){
 		this.src = src; this.slot_number = slot_number; this.command = command;
 }	}
+
 class RespondMessage extends PaxosMessage {
 	Command command;
+	Boolean result;
 	public RespondMessage(ProcessId src, Command command, Boolean result){
-		this.src = src; this.command = command;
+		this.src = src; this.command = command; this.result = result;
+}	}
+class MonitorRequestMessage extends PaxosMessage {
+	public MonitorRequestMessage(ProcessId src){
+		this.src = src;
+}	}
+class MonitorRespondMessage extends PaxosMessage {
+	Boolean result;
+	public MonitorRespondMessage(ProcessId src, Boolean result){
+		this.src = src; this.result = result;
 }	}

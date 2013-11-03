@@ -42,6 +42,9 @@ public class Env {
 			leaders[i] = new ProcessId("leader:" + i);
 			Leader leader = new Leader(this, leaders[i], acceptors, replicas);
 		}
+		
+		Monitor monitor = new Monitor(this, leaders);
+		monitor.start();
 
 //		for (int i = 1; i < nRequests; i++) {
 //			ProcessId pid = new ProcessId("client:" + i);
@@ -56,6 +59,7 @@ public class Env {
 		}
 		
 		testSuit1();
+		
 		
 	}
 
