@@ -43,8 +43,8 @@ public class Env {
 			Leader leader = new Leader(this, leaders[i], acceptors, replicas);
 		}
 		
-		Monitor monitor = new Monitor(this, leaders);
-		monitor.start();
+		Debugger debugger = new Debugger(this, leaders);
+		debugger.start();
 
 //		for (int i = 1; i < nRequests; i++) {
 //			ProcessId pid = new ProcessId("client:" + i);

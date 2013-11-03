@@ -23,7 +23,7 @@ public class Commander extends Process {
 	}
 
 	public void body(){
-		P2aMessage m2 = new P2aMessage(me, ballot_number, slot_number, command);
+		P2aMessage m2 = new P2aMessage(me, ballot_number, slot_number, command, leader);
 		Set<ProcessId> waitfor = new HashSet<ProcessId>();
 		for (ProcessId a: acceptors) {
 			sendMessage(a, m2);
@@ -36,13 +36,16 @@ public class Commander extends Process {
 			if (msg instanceof P2bMessage) {
 				P2bMessage m = (P2bMessage) msg;
 
+				System.out.println(ballot_number.toString() + m.ballot_number.toString());
+				
+				
 				if (ballot_number.equals(m.ballot_number)) {
 					if (waitfor.contains(m.src)) {
 						waitfor.remove(m.src);
 					}
 				}
 				else {
-					sendMessage(leader, new PreemptedMessage(me, m.ballot_number));
+					sendMessage(leader, new PreemptedMessage(me, m.ballot_number, m.newLeader));
 					return;
 				}
 			}

@@ -8,30 +8,56 @@ public class PaxosMessage {
 
 class P1aMessage extends PaxosMessage {
 	BallotNumber ballot_number;
-	P1aMessage(ProcessId src, BallotNumber ballot_number){
-		this.src = src; this.ballot_number = ballot_number;
-}	}
+	ProcessId newLeader;
+//	P1aMessage(ProcessId src, BallotNumber ballot_number){
+//		this.src = src; this.ballot_number = ballot_number;
+//	}
+	P1aMessage(ProcessId src, BallotNumber ballot_number, ProcessId newLeader){
+		this.src = src; this.ballot_number = ballot_number; this.newLeader = newLeader;
+	}
+}
 class P1bMessage extends PaxosMessage {
 	BallotNumber ballot_number; Set<PValue> accepted;
-	P1bMessage(ProcessId src, BallotNumber ballot_number, Set<PValue> accepted) {
-		this.src = src; this.ballot_number = ballot_number; this.accepted = accepted;
-}	}
+	ProcessId newLeader;
+//	P1bMessage(ProcessId src, BallotNumber ballot_number, Set<PValue> accepted) {
+//		this.src = src; this.ballot_number = ballot_number; this.accepted = accepted;
+//	}
+	P1bMessage(ProcessId src, BallotNumber ballot_number, Set<PValue> accepted, ProcessId newLeader) {
+		this.src = src; this.ballot_number = ballot_number; this.accepted = accepted; this.newLeader = newLeader;
+	}
+}
 class P2aMessage extends PaxosMessage {
 	BallotNumber ballot_number; int slot_number; Command command;
-	P2aMessage(ProcessId src, BallotNumber ballot_number, int slot_number, Command command){
+	ProcessId newLeader;
+//	P2aMessage(ProcessId src, BallotNumber ballot_number, int slot_number, Command command){
+//		this.src = src; this.ballot_number = ballot_number;
+//		this.slot_number = slot_number; this.command = command;
+//	}
+	P2aMessage(ProcessId src, BallotNumber ballot_number, int slot_number, Command command, ProcessId newLeader){
 		this.src = src; this.ballot_number = ballot_number;
-		this.slot_number = slot_number; this.command = command;
-}	}
+		this.slot_number = slot_number; this.command = command; this.newLeader = newLeader;
+	}
+}
 class P2bMessage extends PaxosMessage {
 	BallotNumber ballot_number; int slot_number;
-	P2bMessage(ProcessId src, BallotNumber ballot_number, int slot_number){
-		this.src = src; this.ballot_number = ballot_number; this.slot_number = slot_number;
-}	}
+	ProcessId newLeader;
+//	P2bMessage(ProcessId src, BallotNumber ballot_number, int slot_number){
+//		this.src = src; this.ballot_number = ballot_number; this.slot_number = slot_number;
+//	}
+	P2bMessage(ProcessId src, BallotNumber ballot_number, int slot_number, ProcessId newLeader){
+		this.src = src; this.ballot_number = ballot_number; this.slot_number = slot_number; this.newLeader = newLeader;
+	}
+}
 class PreemptedMessage extends PaxosMessage {
 	BallotNumber ballot_number;
-	PreemptedMessage(ProcessId src, BallotNumber ballot_number){
-		this.src = src; this.ballot_number = ballot_number;
-}	}
+	ProcessId newLeader;
+//	PreemptedMessage(ProcessId src, BallotNumber ballot_number){
+//		this.src = src; this.ballot_number = ballot_number;
+//	}
+	PreemptedMessage(ProcessId src, BallotNumber ballot_number, ProcessId newLeader){
+		this.src = src; this.ballot_number = ballot_number; this.newLeader = newLeader;
+	}
+}
 class AdoptedMessage extends PaxosMessage {
 	BallotNumber ballot_number; Set<PValue> accepted;
 	AdoptedMessage(ProcessId src, BallotNumber ballot_number, Set<PValue> accepted){
@@ -59,12 +85,12 @@ class RespondMessage extends PaxosMessage {
 	public RespondMessage(ProcessId src, Command command, Boolean result){
 		this.src = src; this.command = command; this.result = result;
 }	}
-class MonitorRequestMessage extends PaxosMessage {
-	public MonitorRequestMessage(ProcessId src){
+
+class PingRequestMessage extends PaxosMessage {
+	public PingRequestMessage(ProcessId src){
 		this.src = src;
 }	}
-class MonitorRespondMessage extends PaxosMessage {
-	Boolean result;
-	public MonitorRespondMessage(ProcessId src, Boolean result){
-		this.src = src; this.result = result;
+class PingRespondMessage extends PaxosMessage {
+	public PingRespondMessage(ProcessId src){
+		this.src = src;
 }	}

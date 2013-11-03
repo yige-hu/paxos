@@ -5,13 +5,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class Monitor extends Thread {
+public class Debugger extends Thread {
 	
 	Env env;
 	ProcessId[] leaders;
 	String file;
 	
-	Monitor(Env env, ProcessId[] leaders) {
+	Debugger(Env env, ProcessId[] leaders) {
 		this.env = env;
 		this.leaders = leaders;
 		this.file = "leaderState.dat";

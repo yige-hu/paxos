@@ -18,7 +18,7 @@ public class Scout extends Process {
 	}
 
 	public void body(){
-		P1aMessage m1 = new P1aMessage(me, ballot_number);
+		P1aMessage m1 = new P1aMessage(me, ballot_number, leader);
 		Set<ProcessId> waitfor = new HashSet<ProcessId>();
 		for (ProcessId a: acceptors) {
 			sendMessage(a, m1);
@@ -32,9 +32,12 @@ public class Scout extends Process {
 			if (msg instanceof P1bMessage) {
 				P1bMessage m = (P1bMessage) msg;
 
+				System.out.println(ballot_number.toString() + m.ballot_number.toString());
+				
+				
 				int cmp = ballot_number.compareTo(m.ballot_number);
 				if (cmp != 0) {
-					sendMessage(leader, new PreemptedMessage(me, m.ballot_number));
+					sendMessage(leader, new PreemptedMessage(me, m.ballot_number, m.newLeader));
 					return;
 				}
 				if (waitfor.contains(m.src)) {
