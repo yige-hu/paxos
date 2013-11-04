@@ -4,21 +4,24 @@ import java.util.*;
 
 public class Scout extends Process {
 	ProcessId leader;
+	ProcessId leaderResponderId;
+	
 	ProcessId[] acceptors;
 	BallotNumber ballot_number;
 
-	public Scout(Env env, ProcessId me, ProcessId leader,
+	public Scout(Env env, ProcessId me, ProcessId leader, ProcessId leaderResponderId,
 			ProcessId[] acceptors, BallotNumber ballot_number){
 		this.env = env;
 		this.me = me;
 		this.acceptors = acceptors;
 		this.leader = leader;
+		this.leaderResponderId = leaderResponderId;
 		this.ballot_number = ballot_number;
 		env.addProc(me, this);
 	}
 
 	public void body(){
-		P1aMessage m1 = new P1aMessage(me, ballot_number, leader);
+		P1aMessage m1 = new P1aMessage(me, ballot_number, leaderResponderId);
 		Set<ProcessId> waitfor = new HashSet<ProcessId>();
 		for (ProcessId a: acceptors) {
 			sendMessage(a, m1);

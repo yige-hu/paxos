@@ -37,7 +37,7 @@ public class Debugger extends Thread {
 					status += p.ballot_number + "-" + Boolean.toString(p.active) + " ";
 				}
 				buffer.append(status);
-				System.out.println(status);
+				//System.out.println(status);
 				buffer.append("\n");
 				buffer.flush();
 				buffer.close();

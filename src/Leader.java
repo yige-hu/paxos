@@ -13,6 +13,7 @@ public class Leader extends Process {
 	float increase_factor = (float) 1.1;
 	int decrease_factor = 1;
 	int monitorNum = 0;
+	ProcessId responderId;
 
 	public Leader(Env env, ProcessId me, ProcessId[] acceptors,
 										ProcessId[] replicas){
@@ -21,14 +22,24 @@ public class Leader extends Process {
 		ballot_number = new BallotNumber(0, me);
 		this.acceptors = acceptors;
 		this.replicas = replicas;
+		
+		responderId = new ProcessId("monitorResponder:" + me);
+		
 		env.addProc(me, this);
 	}
 
 	public void body(){
-		System.out.println("Here I am: " + me);
+		System.out.println("Here I am: " + me);		
+
+		MonitorResponder responder = new MonitorResponder(env, responderId);
+		try {
+			sleep(50);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		new Scout(env, new ProcessId("scout:" + me + ":" + ballot_number),
-			me, acceptors, ballot_number);
+			me, responderId, acceptors, ballot_number);
 		for (;;) {
 			PaxosMessage msg = getNextMessage();
 
@@ -39,7 +50,7 @@ public class Leader extends Process {
 					if (active) {
 						new Commander(env,
 							new ProcessId("commander:" + me + ":" + ballot_number + ":" + m.slot_number),
-							me, acceptors, replicas, ballot_number, m.slot_number, m.command);
+							me, responderId, acceptors, replicas, ballot_number, m.slot_number, m.command);
 					}
 				}
 			}
@@ -75,7 +86,7 @@ public class Leader extends Process {
 					for (int sn : proposals.keySet()) {
 						new Commander(env,
 							new ProcessId("commander:" + me + ":" + ballot_number + ":" + sn),
-							me, acceptors, replicas, ballot_number, sn, proposals.get(sn));
+							me, responderId, acceptors, replicas, ballot_number, sn, proposals.get(sn));
 					}
 					active = true;
 					
@@ -93,9 +104,7 @@ public class Leader extends Process {
 					active = false;
 					
 					// failure detector:
-					for (;;) {
-						System.out.println("Monitor");
-						
+					for (;;) {						
 						// TODO
 						monitorNum ++;
 						long start_time = System.currentTimeMillis();
@@ -107,7 +116,8 @@ public class Leader extends Process {
 						}
 						long duration = System.currentTimeMillis() - start_time;
 						
-						if (duration >= time_out) {				
+						if (duration >= time_out) {		
+							System.out.println("ping time out\n");
 							break;
 						}
 						
@@ -123,16 +133,9 @@ public class Leader extends Process {
 					
 					ballot_number = new BallotNumber(m.ballot_number.round + 1, me);
 					new Scout(env, new ProcessId("scout:" + me + ":" + ballot_number),
-						me, acceptors, ballot_number);
+						me, responderId, acceptors, ballot_number);
 				}
 			}
-			
-			// failure detector
-			else if (msg instanceof PingRequestMessage) {
-				PingRequestMessage m = (PingRequestMessage) msg;
-				sendMessage(msg.src, new PingRespondMessage(me));				
-			}
-
 			else {
 				System.err.println("Leader: unknown msg type");
 			}

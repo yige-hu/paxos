@@ -2,25 +2,23 @@ package src;
 
 public class Monitor extends Process {
 	
-	ProcessId newLeader;
+	ProcessId newLeaderResponder;
 	
-	Monitor(Env env, ProcessId me, ProcessId newLeader) {
+	Monitor(Env env, ProcessId me, ProcessId newLeaderResponder) {
 		this.env = env;
 		this.me = me;
-		this.newLeader = newLeader;
+		this.newLeaderResponder = newLeaderResponder;
 		env.addProc(me, this);
 	}
 
 	@Override
 	void body() {
-		sendMessage(newLeader, new PingRequestMessage(me));
+		sendMessage(newLeaderResponder, new PingRequestMessage(me));
 		
-		for (;;) {
-			PaxosMessage msg = getNextMessage();
+		PaxosMessage msg = getNextMessage();
 
-			if (msg instanceof PingRespondMessage) {
-				return;
-			}
+		if (msg instanceof PingRespondMessage) {
+			return;
 		}
 	}
 

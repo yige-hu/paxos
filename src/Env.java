@@ -5,7 +5,7 @@ import java.util.*;
 public class Env {
 	Map<ProcessId, Process> procs = new HashMap<ProcessId, Process>();
 	//public final static int nAcceptors = 3, nReplicas = 2, nLeaders = 2, nRequests = 10;
-	public final static int nAcceptors = 3, nReplicas = 2, nLeaders = 2, nClients = 4;
+	public final static int nAcceptors = 3, nReplicas = 2, nLeaders = 5, nClients = 4;
 	
 	Client clients[] = new Client[nClients];
 
