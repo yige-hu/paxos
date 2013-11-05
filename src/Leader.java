@@ -9,7 +9,7 @@ public class Leader extends Process {
 	boolean active = false;
 	Map<Integer, Command> proposals = new HashMap<Integer, Command>();
 	
-	long time_out = 10;
+	long time_out = 50;
 	float increase_factor = (float) 1.1;
 	int decrease_factor = 1;
 	int monitorNum = 0;

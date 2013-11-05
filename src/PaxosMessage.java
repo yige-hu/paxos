@@ -81,8 +81,8 @@ class ProposeMessage extends PaxosMessage {
 
 class RespondMessage extends PaxosMessage {
 	Command command;
-	Boolean result;
-	public RespondMessage(ProcessId src, Command command, Boolean result){
+	String result;
+	public RespondMessage(ProcessId src, Command command, String result){
 		this.src = src; this.command = command; this.result = result;
 }	}
 
@@ -93,4 +93,10 @@ class PingRequestMessage extends PaxosMessage {
 class PingRespondMessage extends PaxosMessage {
 	public PingRespondMessage(ProcessId src){
 		this.src = src;
+}	}
+
+class ClientMessage extends PaxosMessage {
+	String op;
+	public ClientMessage(String op){
+		this.op = op;
 }	}

@@ -5,6 +5,7 @@ import java.util.*;
 
 public class Replica extends Process {
 	ProcessId[] leaders;
+	ProcessId[] clients;
 	int slot_num = 1;
 	Map<Integer /* slot number */, Command> proposals = new HashMap<Integer, Command>();
 	Map<Integer /* slot number */, Command> decisions = new HashMap<Integer, Command>();
@@ -12,10 +13,11 @@ public class Replica extends Process {
 	Map<Integer, BankClient> bankClients = new HashMap<Integer, BankClient>();
 	private DataInfo dataInfo;
 
-	public Replica(Env env, ProcessId me, ProcessId[] leaders){
+	public Replica(Env env, ProcessId me, ProcessId[] leaders, ProcessId[] clients){
 		this.env = env;
 		this.me = me;
 		this.leaders = leaders;
+		this.clients = clients;
 		this.dataInfo = new DataInfo(me + ".dat");
 		this.dataInfo.clearDataInfo();
 		env.addProc(me, this);
@@ -43,9 +45,12 @@ public class Replica extends Process {
 			}
 		}
 		
+		String result = "";
+		int sendClientNum = 0;
 		String op = c.op.toString();
 		try {
 			StringTokenizer t = new StringTokenizer(op, " ");
+			sendClientNum = Integer.parseInt(t.nextToken());
 			String type = t.nextToken();
 			
 			if (type.equals("addBankClient")) {
@@ -100,6 +105,12 @@ public class Replica extends Process {
 				} else {
 					transfer(fromClient, fromAcc, toAcc, amount);
 				}
+			} else if (type.equals("inquiry")) {
+				
+				int clientID = Integer.parseInt(t.nextToken());
+				int accountNum = Integer.parseInt(t.nextToken());
+				
+				result = " RESPONSE:" + inquiry(clientID, accountNum);
 			}
 		} catch (Exception e) {
 			System.out.println("Invalid command: " + op + ", " + e.toString());
@@ -113,6 +124,8 @@ public class Replica extends Process {
 				dataInfo.writeDataInfo("\t" + account.toString());
 			}
 		}
+		
+		sendMessage(clients[sendClientNum], new RespondMessage(me, c, result));
 		
 		System.out.println("" + me + ": perform " + c);
 		slot_num++;
@@ -203,5 +216,10 @@ public class Replica extends Process {
 	public boolean transfer(int fromClient, int fromAcc, int toAcc, long amount, int toClient) {
 		BankClient c = bankClients.get(fromClient);
 		return c.transfer(fromAcc, toClient, toAcc, amount);
+	}
+	
+	public long inquiry(int clientID, int accountNum) {
+		BankClient c = bankClients.get(clientID);
+		return c.inquiry(accountNum);
 	}
 }

@@ -66,6 +66,11 @@ public class BankClient {
 		return true;
 	}
 	
+	public long inquiry(int accountNum) {
+		Account acc = accounts.get(accountNum);
+		return acc.balance;
+	}
+	
 	public String toString(){
 		return "clientID=" + clientID + " name=" + name;
 	}

@@ -7,7 +7,8 @@ public class Env {
 	//public final static int nAcceptors = 3, nReplicas = 2, nLeaders = 2, nRequests = 10;
 	public final static int nAcceptors = 3, nReplicas = 2, nLeaders = 5, nClients = 4;
 	
-	Client clients[] = new Client[nClients];
+	private boolean TEST_1 = true;
+	Object syncObj = new Object();
 
 	synchronized void sendMessage(ProcessId dst, PaxosMessage msg){
 		Process p = procs.get(dst);
@@ -29,6 +30,7 @@ public class Env {
 		ProcessId[] acceptors = new ProcessId[nAcceptors];
 		ProcessId[] replicas = new ProcessId[nReplicas];
 		ProcessId[] leaders = new ProcessId[nLeaders];
+		ProcessId[] clients = new ProcessId[nClients];
 
 		for (int i = 0; i < nAcceptors; i++) {
 			acceptors[i] = new ProcessId("acceptor:" + i);
@@ -36,53 +38,64 @@ public class Env {
 		}
 		for (int i = 0; i < nReplicas; i++) {
 			replicas[i] = new ProcessId("replica:" + i);
-			Replica repl = new Replica(this, replicas[i], leaders);
+			Replica repl = new Replica(this, replicas[i], leaders, clients);
 		}
 		for (int i = 0; i < nLeaders; i++) {
 			leaders[i] = new ProcessId("leader:" + i);
 			Leader leader = new Leader(this, leaders[i], acceptors, replicas);
 		}
 		
-		Debugger debugger = new Debugger(this, leaders);
-		debugger.start();
-
-//		for (int i = 1; i < nRequests; i++) {
-//			ProcessId pid = new ProcessId("client:" + i);
-//			for (int r = 0; r < nReplicas; r++) {
-//				sendMessage(replicas[r],
-//					new RequestMessage(pid, new Command(pid, 0, "operation " + i)));
-//			}
-//		}
-		
 		for (int i = 0; i < nClients; i++) {
-			clients[i] = new Client(this, new ProcessId("client:" + i), replicas);
+			clients[i] = new ProcessId("client:" + i);
+			Client client = new Client(this, clients[i], replicas, i, syncObj);
 		}
 		
-		testSuit1();
+		Debugger debugger = new Debugger(this, leaders);
+		debugger.start();
+		
+		if (TEST_1) {
+			sendMessage(clients[0], new ClientMessage("addBankClient 1"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[1], new ClientMessage("addBankClient 2 Jim"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[0], new ClientMessage("addBankClient 3 Lily"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[2], new ClientMessage("addBankClient 4"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			
+			sendMessage(clients[1], new ClientMessage("createAccount 1 1 100"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[2], new ClientMessage("createAccount 1 2"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[3], new ClientMessage("createAccount 2 1 200"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[1], new ClientMessage("createAccount 3 1 50"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			
+			sendMessage(clients[1], new ClientMessage("deposit 1 1 150"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[2], new ClientMessage("deposit 1 2 300"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[0], new ClientMessage("deposit 3 1 225"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			
+			sendMessage(clients[3], new ClientMessage("withdraw 1 1 30"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[3], new ClientMessage("withdraw 2 1 45"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			
+			sendMessage(clients[1], new ClientMessage("transfer 1 1 2 30"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[2], new ClientMessage("transfer 2 1 1 42 3"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			
+			sendMessage(clients[0], new ClientMessage("inquiry 1 2"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+			sendMessage(clients[3], new ClientMessage("inquiry 2 1"));
+		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+		}
 		
 		
-	}
-
-	private void testSuit1() {
-		clients[0].request("addBankClient 1");
-		clients[1].request("addBankClient 2 Jim");
-		clients[0].request("addBankClient 3 Lily");
-		clients[2].request("addBankClient 4");
-		
-		clients[1].request("createAccount 1 1 100");
-		clients[2].request("createAccount 1 2");
-		clients[3].request("createAccount 2 1 200");
-		clients[1].request("createAccount 3 1 50");
-		
-		clients[1].request("deposit 1 1 150");
-		clients[2].request("deposit 1 2 300");
-		clients[0].request("deposit 3 1 225");
-		
-		clients[3].request("withdraw 1 1 30");
-		clients[3].request("withdraw 2 1 45");
-		
-		clients[1].request("transfer 1 1 2 30");
-		clients[2].request("transfer 2 1 1 42 3");
 	}
 
 	public static void main(String[] args){
