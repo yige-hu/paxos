@@ -1,12 +1,8 @@
 package src;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.CountDownLatch;
 
 public class Client extends Process {
 
@@ -23,8 +19,8 @@ public class Client extends Process {
 	Object syncObj = new Object();
 	ProcessId requester;
 	List<ProcessId> responded_replicas = new LinkedList<ProcessId>();
-	final Lock lock = new ReentrantLock();
-	final Condition roc_syncObj = lock.newCondition(); 
+	CountDownLatch latch = new CountDownLatch(1);
+	CountDownLatch latch_finish = new CountDownLatch(1);
 	
 	public Client(Env env, ProcessId me, ProcessId[] replicas, int num) {
 		this.env = env;
@@ -52,7 +48,7 @@ public class Client extends Process {
 	@Override
 	void body() {
 		ClientRequester clientRequester = new ClientRequester(env, requester, me, replicas, 
-				syncObj, responded_replicas, lock, roc_syncObj);
+				syncObj, responded_replicas, latch, latch_finish);
 		
 		System.out.println("Here I am: " + me);
 		for (;;) {
@@ -84,14 +80,14 @@ public class Client extends Process {
 				ROCRespondMessage m = (ROCRespondMessage) msg;
 				if (waitForROCResponse == m.command.req_id) {
 					System.out.println("Get ROC response: " + m.command	+ m.result);
-					synchronized (syncObj) { syncObj.notify(); }
-					waitForROCResponse++;
-					lock.lock();
+					latch.countDown();
 					try {
-						roc_syncObj.signal();
-					} finally {
-						lock.unlock();
+						latch_finish.await();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
+					synchronized (syncObj) { syncObj.notify(); }
+					waitForROCResponse++;					
 				}
 				
 			} else {
