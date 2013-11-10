@@ -9,46 +9,44 @@ public class Client extends Process {
 	ProcessId me;
 	ProcessId[] replicas;
 	Integer num;
-	Object syncObj;
 	private int req_id;
-	boolean waitForResponse = false;
+	int waitForResponse = 0;
+	Object syncObj = new Object();
+	ProcessId requester;
 	
-	public Client(Env env, ProcessId me, ProcessId[] replicas, int num, Object syncObj) {
+	public Client(Env env, ProcessId me, ProcessId[] replicas, int num) {
 		this.env = env;
 		this.me = me;
 		this.replicas = replicas;
 		this.num = num;
-		this.syncObj = syncObj;
-		this.req_id = 0;
 		
+		this.req_id = 0;
+		this.requester = new ProcessId(me + "requester");
 		env.addProc(me, this);
 	}
 
 	void request(String op){
-		for (ProcessId ldr: replicas) {
-			env.sendMessage(ldr,
-				new RequestMessage(me, new Command(me, req_id, num.toString() + " " + op)));
-		}
+		env.sendMessage(requester, new ClientRequestMessage(me, new Command(me, req_id, num.toString() + " " + op)));
 		req_id ++;
 	}
 
 	@Override
 	void body() {
+		ClientRequester clientRequester = new ClientRequester(env, requester, me, replicas, syncObj);
+		
 		System.out.println("Here I am: " + me);
 		for (;;) {
 			PaxosMessage msg = getNextMessage();
 
 			if (msg instanceof ClientMessage) {
 				ClientMessage m = (ClientMessage) msg;
-				request(m.op);
-				waitForResponse = true;
-				
+				request(m.op);				
 			} else if (msg instanceof RespondMessage) {
-				if (waitForResponse) {
-					RespondMessage m = (RespondMessage) msg;
+				RespondMessage m = (RespondMessage) msg;
+				if (waitForResponse == m.command.req_id) {
 					System.out.println("Get response: " + m.command + m.result);
 					synchronized(syncObj) { syncObj.notify(); }
-					waitForResponse = false;
+					waitForResponse ++;
 				}
 			}
 			else {

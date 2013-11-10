@@ -100,3 +100,9 @@ class ClientMessage extends PaxosMessage {
 	public ClientMessage(String op){
 		this.op = op;
 }	}
+
+class ClientRequestMessage extends PaxosMessage {
+	Command command;
+	public ClientRequestMessage(ProcessId src, Command command){
+		this.src = src; this.command = command;
+}	}

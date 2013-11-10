@@ -8,7 +8,6 @@ public class Env {
 	public final static int nAcceptors = 3, nReplicas = 2, nLeaders = 5, nClients = 4;
 	
 	private boolean TEST_1 = true;
-	Object syncObj = new Object();
 
 	synchronized void sendMessage(ProcessId dst, PaxosMessage msg){
 		Process p = procs.get(dst);
@@ -47,7 +46,7 @@ public class Env {
 		
 		for (int i = 0; i < nClients; i++) {
 			clients[i] = new ProcessId("client:" + i);
-			Client client = new Client(this, clients[i], replicas, i, syncObj);
+			Client client = new Client(this, clients[i], replicas, i);
 		}
 		
 		Debugger debugger = new Debugger(this, leaders);
@@ -55,44 +54,27 @@ public class Env {
 		
 		if (TEST_1) {
 			sendMessage(clients[0], new ClientMessage("addBankClient 1"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
 			sendMessage(clients[1], new ClientMessage("addBankClient 2 Jim"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
 			sendMessage(clients[0], new ClientMessage("addBankClient 3 Lily"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
 			sendMessage(clients[2], new ClientMessage("addBankClient 4"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			
-			sendMessage(clients[1], new ClientMessage("createAccount 1 1 100"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			sendMessage(clients[2], new ClientMessage("createAccount 1 2"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			sendMessage(clients[3], new ClientMessage("createAccount 2 1 200"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			sendMessage(clients[1], new ClientMessage("createAccount 3 1 50"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			
-			sendMessage(clients[1], new ClientMessage("deposit 1 1 150"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			sendMessage(clients[2], new ClientMessage("deposit 1 2 300"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			sendMessage(clients[0], new ClientMessage("deposit 3 1 225"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			
-			sendMessage(clients[3], new ClientMessage("withdraw 1 1 30"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			sendMessage(clients[3], new ClientMessage("withdraw 2 1 45"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			
-			sendMessage(clients[1], new ClientMessage("transfer 1 1 2 30"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			sendMessage(clients[2], new ClientMessage("transfer 2 1 1 42 3"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			
-			sendMessage(clients[0], new ClientMessage("inquiry 1 2"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
-			sendMessage(clients[3], new ClientMessage("inquiry 2 1"));
-		    try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+//			
+//			sendMessage(clients[1], new ClientMessage("createAccount 1 1 100"));
+//			sendMessage(clients[2], new ClientMessage("createAccount 1 2"));
+//			sendMessage(clients[3], new ClientMessage("createAccount 2 1 200"));
+//			sendMessage(clients[1], new ClientMessage("createAccount 3 1 50"));
+//			
+//			sendMessage(clients[1], new ClientMessage("deposit 1 1 150"));
+//			sendMessage(clients[2], new ClientMessage("deposit 1 2 300"));
+//			sendMessage(clients[0], new ClientMessage("deposit 3 1 225"));
+//			
+//			sendMessage(clients[3], new ClientMessage("withdraw 1 1 30"));
+//			sendMessage(clients[3], new ClientMessage("withdraw 2 1 45"));
+//			
+//			sendMessage(clients[1], new ClientMessage("transfer 1 1 2 30"));
+//			sendMessage(clients[2], new ClientMessage("transfer 2 1 1 42 3"));
+//			
+//			sendMessage(clients[0], new ClientMessage("inquiry 1 2"));
+//			sendMessage(clients[3], new ClientMessage("inquiry 2 1"));
 		}
 		
 		
