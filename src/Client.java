@@ -1,6 +1,8 @@
 package src;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Client extends Process {
@@ -11,10 +13,12 @@ public class Client extends Process {
 	Integer num;
 	private int req_id;
 	private int req_id_roc;
+	
 	int waitForResponse = 0;
 	int waitForROCResponse = 0;
 	Object syncObj = new Object();
 	ProcessId requester;
+	List<ProcessId> responded_replicas = new LinkedList<ProcessId>();
 	
 	public Client(Env env, ProcessId me, ProcessId[] replicas, int num) {
 		this.env = env;
@@ -25,6 +29,7 @@ public class Client extends Process {
 		this.req_id = 0;
 		this.req_id_roc = 0;
 		this.requester = new ProcessId(me + "requester");
+		
 		env.addProc(me, this);
 	}
 
@@ -40,7 +45,7 @@ public class Client extends Process {
 
 	@Override
 	void body() {
-		ClientRequester clientRequester = new ClientRequester(env, requester, me, replicas, syncObj);
+		ClientRequester clientRequester = new ClientRequester(env, requester, me, replicas, syncObj, responded_replicas);
 		
 		System.out.println("Here I am: " + me);
 		for (;;) {
@@ -50,6 +55,8 @@ public class Client extends Process {
 				ClientMessage m = (ClientMessage) msg;
 				request(m.op);
 				
+				responded_replicas.clear();
+				
 			} else if (msg instanceof RespondMessage) {
 				RespondMessage m = (RespondMessage) msg;
 				if (waitForResponse == m.command.req_id) {
@@ -57,6 +64,7 @@ public class Client extends Process {
 					synchronized(syncObj) { syncObj.notify(); }
 					waitForResponse ++;
 				}
+				responded_replicas.add(m.src);
 				
 			} else if (msg instanceof ROCClientMessage) {
 				ROCClientMessage m = (ROCClientMessage) msg;

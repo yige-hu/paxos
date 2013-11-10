@@ -1,18 +1,24 @@
 package src;
 
+import java.util.List;
+import java.util.Map;
+
 public class ClientRequester extends Process {
 
 	Object syncObj;
 	ProcessId[] replicas;
 	ProcessId client;
+	List<ProcessId> responded_replicas;
 
 	
-	ClientRequester(Env env, ProcessId me, ProcessId client, ProcessId[] replicas, Object syncObj) {
+	ClientRequester(Env env, ProcessId me, ProcessId client, ProcessId[] replicas, Object syncObj, 
+			List<ProcessId> responded_replicas) {
 		this.env = env;
 		this.me = me;
 		this.client = client;
 		this.replicas = replicas;
 		this.syncObj = syncObj;
+		this.responded_replicas = responded_replicas;
 		
 		env.addProc(me, this);
 	}
@@ -26,9 +32,9 @@ public class ClientRequester extends Process {
 	
 	void requestROC(Command command){
 		// TODO
-		for (ProcessId ldr: replicas) {
+		for (ProcessId ldr: responded_replicas) {
 			env.sendMessage(ldr,
-				new RequestMessage(me, command));
+				new ROCRequestMessage(me, command));
 		}
 	}
 	

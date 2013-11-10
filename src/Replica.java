@@ -105,13 +105,14 @@ public class Replica extends Process {
 				} else {
 					transfer(fromClient, fromAcc, toAcc, amount);
 				}
-			} else if (type.equals("inquiry")) {
-				
-				int clientID = Integer.parseInt(t.nextToken());
-				int accountNum = Integer.parseInt(t.nextToken());
-				
-				result = " RESPONSE:" + inquiry(clientID, accountNum);
 			}
+//			else if (type.equals("inquiry")) {
+//				
+//				int clientID = Integer.parseInt(t.nextToken());
+//				int accountNum = Integer.parseInt(t.nextToken());
+//				
+//				result = " RESPONSE:" + inquiry(clientID, accountNum);
+//			}
 		} catch (Exception e) {
 			System.out.println("Invalid command: " + op + ", " + e.toString());
 		}
@@ -127,10 +128,37 @@ public class Replica extends Process {
 		
 		sendMessage(clients[sendClientNum], new RespondMessage(me, c, result));
 		
-		System.out.println("" + me + ": perform " + c);
+//		System.out.println("" + me + ": perform " + c);
 		slot_num++;
 	}
 
+	void performROC(Command c){
+		
+		String result = "";
+		int sendClientNum = 0;
+		String op = c.op.toString();
+		try {
+			StringTokenizer t = new StringTokenizer(op, " ");
+			sendClientNum = Integer.parseInt(t.nextToken());
+			String type = t.nextToken();
+			
+			if (type.equals("inquiry")) {
+				
+				int clientID = Integer.parseInt(t.nextToken());
+				int accountNum = Integer.parseInt(t.nextToken());
+				
+				result = " RESPONSE:" + inquiry(clientID, accountNum);
+			}
+		} catch (Exception e) {
+			System.out.println("Invalid command: " + op + ", " + e.toString());
+		}
+		
+		dataInfo.writeDataInfo("" + me + ": perform ROC " + c);
+		
+		sendMessage(clients[sendClientNum], new ROCRespondMessage(me, c, result));
+		
+//		System.out.println("" + me + ": perform ROC " + c);
+	}
 
 
 
@@ -169,6 +197,12 @@ public class Replica extends Process {
 					perform(c);
 				}
 			}
+			
+			else if  (msg instanceof ROCRequestMessage) {
+				ROCRequestMessage m = (ROCRequestMessage) msg;
+				performROC(m.command);
+			}
+			
 			else {
 				System.err.println("Replica: unknown msg type");
 			}
