@@ -106,3 +106,28 @@ class ClientRequestMessage extends PaxosMessage {
 	public ClientRequestMessage(ProcessId src, Command command){
 		this.src = src; this.command = command;
 }	}
+
+class ROCClientMessage extends PaxosMessage {
+	String op;
+	public ROCClientMessage(String op){
+		this.op = op;
+}	}
+
+class ROCClientRequestMessage extends PaxosMessage {
+	Command command;
+	public ROCClientRequestMessage(ProcessId src, Command command){
+		this.src = src; this.command = command;
+}	}
+
+class ROCRequestMessage extends PaxosMessage {
+	Command command;
+	public ROCRequestMessage(ProcessId src, Command command){
+		this.src = src; this.command = command;
+}	}
+
+class ROCRespondMessage extends PaxosMessage {
+	Command command;
+	String result;
+	public ROCRespondMessage(ProcessId src, Command command, String result){
+		this.src = src; this.command = command; this.result = result;
+}	}

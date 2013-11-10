@@ -22,7 +22,14 @@ public class ClientRequester extends Process {
 			env.sendMessage(ldr,
 				new RequestMessage(me, command));
 		}
-		
+	}
+	
+	void requestROC(Command command){
+		// TODO
+		for (ProcessId ldr: replicas) {
+			env.sendMessage(ldr,
+				new RequestMessage(me, command));
+		}
 	}
 	
 	@Override
@@ -34,6 +41,11 @@ public class ClientRequester extends Process {
 			if (msg instanceof ClientRequestMessage) {
 				ClientRequestMessage m = (ClientRequestMessage) msg;
 				request(m.command);
+				try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
+				
+			} else if (msg instanceof ROCClientRequestMessage) {
+				ROCClientRequestMessage m = (ROCClientRequestMessage) msg;
+				requestROC(m.command);
 				try { synchronized(syncObj) { syncObj.wait(); } } catch(InterruptedException ie) { }
 			}
 		}
