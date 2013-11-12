@@ -1,13 +1,13 @@
 replica:3: perform Command(client:0, 0, 0 addBankClient 1)
 clientID=1 name=null
-replica:3: perform Command(client:1, 0, 1 addBankClient 2 Jim)
-clientID=1 name=null
-clientID=2 name=Jim
 replica:3: perform Command(client:2, 0, 2 addBankClient 3 Lily)
 clientID=1 name=null
-clientID=2 name=Jim
 clientID=3 name=Lily
 replica:3: perform Command(client:3, 0, 3 addBankClient 4)
+clientID=1 name=null
+clientID=3 name=Lily
+clientID=4 name=null
+replica:3: perform Command(client:1, 0, 1 addBankClient 2 Jim)
 clientID=1 name=null
 clientID=2 name=Jim
 clientID=3 name=Lily
@@ -18,14 +18,14 @@ clientID=1 name=null
 clientID=2 name=Jim
 clientID=3 name=Lily
 clientID=4 name=null
-replica:3: perform Command(client:1, 1, 1 createAccount 2 1 200)
+replica:3: perform Command(client:2, 1, 2 createAccount 3 1 50)
 clientID=1 name=null
 	accountNum=1 balance=100
 clientID=2 name=Jim
-	accountNum=1 balance=200
 clientID=3 name=Lily
+	accountNum=1 balance=50
 clientID=4 name=null
-replica:3: perform Command(client:2, 1, 2 createAccount 3 1 50)
+replica:3: perform Command(client:1, 1, 1 createAccount 2 1 200)
 clientID=1 name=null
 	accountNum=1 balance=100
 clientID=2 name=Jim
@@ -42,16 +42,16 @@ clientID=2 name=Jim
 clientID=3 name=Lily
 	accountNum=1 balance=50
 clientID=4 name=null
-replica:3: perform Command(client:1, 2, 1 withdraw 2 1 45)
+replica:3: perform Command(client:2, 2, 2 deposit 3 1 225)
 clientID=1 name=null
 	accountNum=1 balance=100
 	accountNum=2 balance=0
 clientID=2 name=Jim
-	accountNum=1 balance=155
+	accountNum=1 balance=200
 clientID=3 name=Lily
-	accountNum=1 balance=50
+	accountNum=1 balance=275
 clientID=4 name=null
-replica:3: perform Command(client:2, 2, 2 deposit 3 1 225)
+replica:3: perform Command(client:1, 2, 1 withdraw 2 1 45)
 clientID=1 name=null
 	accountNum=1 balance=100
 	accountNum=2 balance=0
@@ -60,108 +60,16 @@ clientID=2 name=Jim
 clientID=3 name=Lily
 	accountNum=1 balance=275
 clientID=4 name=null
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:2, 0, 2 inquiry 2 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:2, 0, 2 inquiry 2 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform Command(client:1, 3, 1 transfer 2 1 1 42 3)
+replica:3: perform Command(client:0, 3, 0 deposit 1 1 150)
 clientID=1 name=null
-	accountNum=1 balance=100
+	accountNum=1 balance=250
 	accountNum=2 balance=0
 clientID=2 name=Jim
-	accountNum=1 balance=113
+	accountNum=1 balance=155
 clientID=3 name=Lily
-	accountNum=1 balance=317
+	accountNum=1 balance=275
 clientID=4 name=null
-replica:3: perform ROC Command(client:2, 0, 2 inquiry 2 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:2, 0, 2 inquiry 2 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:2, 0, 2 inquiry 2 1)
-replica:3: perform ROC Command(client:2, 0, 2 inquiry 2 1)
-replica:3: perform ROC Command(client:0, 0, 0 inquiry 1 1)
-replica:3: perform ROC Command(client:1, 0, 1 inquiry 1 2)
-replica:3: perform Command(client:0, 3, 0 deposit 1 1 150)
+replica:3: perform Command(client:1, 3, 1 transfer 2 1 1 42 3)
 clientID=1 name=null
 	accountNum=1 balance=250
 	accountNum=2 balance=0
@@ -170,13 +78,6 @@ clientID=2 name=Jim
 clientID=3 name=Lily
 	accountNum=1 balance=317
 clientID=4 name=null
-replica:3: perform ROC Command(client:1, 0, 1 inquiry 1 2)
-replica:3: perform ROC Command(client:1, 0, 1 inquiry 1 2)
-replica:3: perform ROC Command(client:1, 0, 1 inquiry 1 2)
-replica:3: perform ROC Command(client:1, 0, 1 inquiry 1 2)
-replica:3: perform ROC Command(client:1, 0, 1 inquiry 1 2)
-replica:3: perform ROC Command(client:1, 0, 1 inquiry 1 2)
-replica:3: perform ROC Command(client:0, 1, 0 inquiry 1 1)
 replica:3: perform Command(client:0, 4, 0 deposit 1 2 300)
 clientID=1 name=null
 	accountNum=1 balance=250

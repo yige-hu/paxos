@@ -152,11 +152,10 @@ public class Replica extends Process {
 		} catch (Exception e) {
 			System.out.println("Invalid command: " + op + ", " + e.toString());
 		}
-		
-		dataInfo.writeDataInfo("" + me + ": perform ROC " + c);
-		
+				
 		sendMessage(clients[sendClientNum], new ROCRespondMessage(me, c, result));
 		
+//		dataInfo.writeDataInfo("" + me + ": perform ROC " + c);
 //		System.out.println("" + me + ": perform ROC " + c);
 	}
 

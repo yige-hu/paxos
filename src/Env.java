@@ -8,6 +8,8 @@ public class Env {
 	public final static int nAcceptors = 5, nReplicas = 5, nLeaders = 5, nClients = 4;
 	
 	private boolean TEST_1 = true;
+	boolean TEST_LEADER01DIE = false;
+	boolean TEST_NETWORK_PARTITION = false;
 
 	synchronized void sendMessage(ProcessId dst, PaxosMessage msg){
 		Process p = procs.get(dst);
@@ -67,6 +69,8 @@ public class Env {
 			
 			sendMessage(clients[0], new ClientMessage("deposit 1 1 150"));
 			
+			sendMessage(clients[0], new ROCClientMessage("inquiry 1 1"));
+			sendMessage(clients[0], new ROCClientMessage("inquiry 1 1"));
 			sendMessage(clients[0], new ROCClientMessage("inquiry 1 1"));
 			
 			sendMessage(clients[0], new ClientMessage("deposit 1 2 300"));

@@ -30,8 +30,18 @@ public class Leader extends Process {
 
 	public void body(){
 		System.out.println("Here I am: " + me);		
+		
+		if (env.TEST_LEADER01DIE)
+			if (me.toString().equals("leader:0") || me.toString().equals("leader:1")) {
+				try {
+					System.out.println(me + ": sleep(1000000)");
+					sleep(1000000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 
-		MonitorResponder responder = new MonitorResponder(env, responderId);
+		MonitorResponder responder = new MonitorResponder(env, responderId, me);
 		try {
 			sleep(50);
 		} catch (InterruptedException e) {
@@ -105,10 +115,9 @@ public class Leader extends Process {
 					
 					// failure detector:
 					for (;;) {						
-						// TODO
 						monitorNum ++;
 						long start_time = System.currentTimeMillis();
-						Monitor monitor = new Monitor(env, new ProcessId("monitor:" + monitorNum + me), m.newLeader);
+						Monitor monitor = new Monitor(env, new ProcessId("monitor:" + monitorNum + me), me, m.newLeader);
 						try {
 							monitor.join(time_out);
 						} catch (InterruptedException e1) {

@@ -87,8 +87,10 @@ class RespondMessage extends PaxosMessage {
 }	}
 
 class PingRequestMessage extends PaxosMessage {
-	public PingRequestMessage(ProcessId src){
+	ProcessId leader;
+	public PingRequestMessage(ProcessId src, ProcessId leader){
 		this.src = src;
+		this.leader = leader;
 }	}
 class PingRespondMessage extends PaxosMessage {
 	public PingRespondMessage(ProcessId src){
